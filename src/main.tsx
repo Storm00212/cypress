@@ -1,3 +1,16 @@
+/**
+ * Main Application Entry Point
+ *
+ * This file bootstraps the React application with Redux state management and persistence.
+ * It sets up the root component tree with necessary providers and renders the app.
+ *
+ * Key concepts:
+ * - React.StrictMode: Enables additional development checks and warnings
+ * - Redux Provider: Makes the Redux store available to all components
+ * - PersistGate: Delays app rendering until persisted state is loaded from localStorage
+ * - createRoot: New React 18 API for concurrent rendering
+ */
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
@@ -6,12 +19,15 @@ import { Provider } from "react-redux"
 import { persistedStore, store } from './app/store.ts'
 import { PersistGate } from 'redux-persist/integration/react'
 
+// Create the root React element and render the application
+// The '!' asserts that getElementById will not return null (root element exists)
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    {/* Redux Provider makes the store available to all components via React Context */}
     <Provider store={store}>
-      {/* Provide the Redux store to the entire app */}
-      {/* PersistGate is used to delay the rendering of the app until the persisted state has been retrieved and saved to redux store. This is useful to avoid rendering the app with an empty state before the persisted state is loaded. */}
-      {/* The loading prop can be used to show a loading indicator while the persisted state is being loaded. In this case, it is set to null, meaning no loading indicator will be shown. You can replace it with a spinner or any other loading component if you want to show a loading indicator. */}
+      {/* PersistGate delays rendering until Redux Persist loads saved state from localStorage */}
+      {/* This prevents the app from showing empty state before persisted data is restored */}
+      {/* loading={null} means no loading spinner; set to a component to show loading UI */}
       <PersistGate loading={null} persistor={persistedStore}>
         <App />
       </PersistGate>
