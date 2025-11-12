@@ -1,8 +1,21 @@
+/**
+ * Users API using RTK Query
+ *
+ * This file defines API endpoints for user management using Redux Toolkit Query (RTK Query).
+ * It handles operations like user registration, verification, fetching users, and updates.
+ *
+ * RTK Query provides:
+ * - Automatic caching and invalidation
+ * - Auto-generated hooks for components
+ * - Loading states and error handling
+ * - Optimistic updates
+ */
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { ApiDomain } from "../../utils/ApiDomain";
 import type { RootState } from "../../app/store";
 
-
+// TypeScript interface defining the structure of a User.
 export type TUser = {
     id: number
     firstName: string;
@@ -15,32 +28,35 @@ export type TUser = {
 
 }
 
-export const usersAPI = createApi({ // sets up API endpoints for user management - creating users and verifying them etc
-    reducerPath: 'usersAPI', // this is the key in the store where the API state will be stored - name of the API in the store
+// Create the users API slice for managing user-related operations.
+export const usersAPI = createApi({
+    reducerPath: 'usersAPI', // Unique identifier for this API in the Redux store
     baseQuery: fetchBaseQuery({
-        baseUrl: ApiDomain, // base URL for the API - this is the domain where the API is hosted
+        baseUrl: ApiDomain, // Base URL for all user API requests
         prepareHeaders: (headers, { getState }) => {
-            const token = (getState() as RootState).user.token; // get the token from the user slice of the state
+            // Prepare authentication headers for requests
+            const token = (getState() as RootState).user.token; // Get auth token from Redux state
             if (token) {
-                headers.set('Authorization', `Bearer ${token}`); // set the Authorization header with the token
+                headers.set('Authorization', `Bearer ${token}`); // Add Bearer token
             }
-            headers.set('Content-Type', 'application/json'); // set the Content-Type header to application/json
-            return headers; // return the headers to be used in the request
+            headers.set('Content-Type', 'application/json'); // Set JSON content type
+            return headers;
         }
-    }), // base query function that will be used to make requests to the API
+    }),
 
-    // used to invalidate the cache when a mutation is performed 
-    //  it helps to keep the data fresh in the cache, that is to mean that when a user is created, the cache is invalidated so that the next time the users are fetched, the new user is included in the list.
-    tagTypes: ['Users'], // tag types for invalidation 
-    endpoints: (builder) => ({ //builder is a function that helps to define the endpoints for the API
+    // Tag types for cache invalidation - ensures data stays fresh after mutations
+    tagTypes: ['Users'],
+    endpoints: (builder) => ({ // Define API endpoints
+        // Mutation for user registration
         createUsers: builder.mutation<TUser, Partial<TUser>>({
             query: (newUser) => ({
                 url: '/auth/register',
                 method: 'POST',
                 body: newUser
             }),
-            invalidatesTags: ['Users'] // invalidates the cache for the Users tag when a new user is created
+            invalidatesTags: ['Users'] // Refresh user list cache after registration
         }),
+        // Mutation for email verification
         verifyUser: builder.mutation<{ message: string }, { email: string; code: string }>({
             query: (data) => ({
                 url: '/auth/verify',
@@ -48,19 +64,21 @@ export const usersAPI = createApi({ // sets up API endpoints for user management
                 body: data,
             }),
         }),
+        // Query to fetch all users
         getUsers: builder.query<TUser[], void>({
             query: () => '/users',
-            providesTags: ['Users']
+            providesTags: ['Users'] // Cache this query
         }),
-        // update user
+        // Mutation to update user details
         updateUser: builder.mutation<TUser, Partial<TUser> & { id: number }>({
             query: (user) => ({
                 url: `/user/${user.id}`,
                 method: 'PUT',
                 body: user,
             }),
-            invalidatesTags: ['Users']
+            invalidatesTags: ['Users'] // Invalidate cache after update
         }),
+        // Query to fetch a specific user by ID
         getUserById: builder.query<TUser, number>({
             query: (id) => `/user/${id}`,
         }),
