@@ -1,23 +1,44 @@
+/**
+ * Navigation Bar Component
+ *
+ * Responsive navigation component that adapts to user authentication state.
+ * Shows different menu items based on whether user is logged in and their role.
+ *
+ * Features:
+ * - Responsive design (mobile hamburger menu + desktop horizontal menu)
+ * - Role-based navigation (admin vs user dashboards)
+ * - Conditional rendering based on authentication state
+ * - Logo display and navigation links
+ */
+
 import logo from '../../assets/images/logo.png';
 import { NavLink } from 'react-router';
 import { type RootState } from '../../app/store';
 import { useSelector } from 'react-redux';
 
 const Navbar = () => {
+    // Access user authentication state from Redux
     const userrole = useSelector((state: RootState) => state.user.user?.role);
     const userToken = useSelector((state: RootState) => state.user.token);
+
+    // Determine user role for conditional navigation
     const isAdmin = userrole === 'admin';
     const isUser = userrole === 'user';
     return (
         <div>
+            {/* Main navbar container with background and shadow */}
             <div className="navbar bg-gray-300 shadow-sm">
+                {/* Left section - logo and mobile menu */}
                 <div className="navbar-start">
+                    {/* Mobile hamburger menu dropdown */}
                     <div className="dropdown">
+                        {/* Hamburger menu button - only visible on mobile */}
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden" data-test="todo-mobile-menu-bars">
+                            {/* Hamburger icon SVG */}
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /> </svg>
                         </div>
+                        {/* Mobile dropdown menu content */}
                         <ul
-                            // mobile
                             className="menu menu-sm dropdown-content rounded-box z-1 mt-3 w-52 p-2 shadow text-base-content bg-gray-700 h-[60vh]"
                             data-test="todo-ul-menu"
                         >
