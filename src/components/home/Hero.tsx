@@ -1,13 +1,30 @@
+/**
+ * Hero Section Component
+ *
+ * Main banner section of the landing page that introduces the product.
+ * Features compelling copy and visual elements to capture user attention.
+ *
+ * Layout:
+ * - Responsive two-column layout (text left, image right on desktop)
+ * - Marketing copy highlighting key benefits
+ * - Hero image to visually represent the product
+ * - Call-to-action messaging
+ */
+
 import homeIMG from '../../assets/images/home-image.png'
 
 export const Hero = () => {
-
     return (
+        // Main hero container with responsive flex layout
         <div className="flex flex-col md:flex-row justify-between gap-8 h-fit p-4 md:p-8">
+            {/* Text content section */}
             <div className="w-full md:w-1/2 border-2 border-gray-300 rounded-lg p-6 md:p-8 mb-6 md:mb-0">
+                {/* Main headline with test selector */}
                 <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-600" data-test="todo-welcome-header">
                     Welcome to TodoPro!
                 </h1>
+
+                {/* Marketing copy paragraphs */}
                 <p className="mb-4 text-gray-700 text-base md:text-lg">
                     Supercharge your team's productivity with <span className="font-semibold text-blue-600">TodoPro</span> — the ultimate task management service for modern teams.
                 </p>
@@ -19,6 +36,7 @@ export const Hero = () => {
                 </p>
             </div>
 
+            {/* Hero image section */}
             <div className="w-full md:w-1/2 flex items-center">
                 <img
                     src={homeIMG}
