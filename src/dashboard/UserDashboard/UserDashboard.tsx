@@ -1,3 +1,17 @@
+/**
+ * User Dashboard Layout Component
+ *
+ * Main layout component for the user dashboard with responsive sidebar navigation.
+ * Provides a consistent structure for all user pages with collapsible drawer.
+ *
+ * Features:
+ * - Responsive sidebar (collapsible on mobile, fixed on desktop)
+ * - Top navigation bar with welcome message
+ * - Drawer toggle functionality
+ * - Outlet for rendering nested user routes
+ * - Consistent footer across all user pages
+ */
+
 import { useState } from "react";
 import { Outlet } from "react-router";
 import Navbar from "../../components/nav/Navbar";
@@ -7,8 +21,10 @@ import { IoCloseSharp } from "react-icons/io5";
 import Footer from "../../components/footer/Footer";
 
 const UserDashboard = () => {
+    // State for controlling drawer/sidebar visibility on mobile
     const [drawerOpen, setDrawerOpen] = useState(false);
 
+    // Toggle function for opening/closing the drawer
     const handleDrawerToggle = () => {
         setDrawerOpen((prev) => !prev);
     };
